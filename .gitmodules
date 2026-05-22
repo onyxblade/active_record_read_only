@@ -1,0 +1,3 @@
+[submodule "references/rails"]
+	path = references/rails
+	url = git@github.com:rails/rails.git
