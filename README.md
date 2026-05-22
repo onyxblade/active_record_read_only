@@ -34,7 +34,9 @@ end
 ```
 
 For a walk-through with **real captured call stacks** from each scenario,
-see [`doc/internals.md`](doc/internals.md).
+see [`doc/internals.md`](doc/internals.md). For why the gem doesn't use
+`using Post::Writable` (the more natural Ruby form), see
+[`doc/why_refinements_dont_work.md`](doc/why_refinements_dont_work.md).
 
 ## How it works
 
