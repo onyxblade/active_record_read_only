@@ -1,9 +1,14 @@
 # frozen_string_literal: true
 
 require "active_record"
+require "sqlite3"
 require "active_record_read_only"
 
-ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:")
+ActiveRecord::Base.establish_connection(
+  adapter: "sqlite3",
+  database: "file::memory:?cache=shared",
+  flags: SQLite3::Constants::Open::READWRITE | SQLite3::Constants::Open::CREATE | SQLite3::Constants::Open::URI
+)
 
 ActiveRecord::Schema.define do
   create_table :posts, force: true do |t|
@@ -13,16 +18,20 @@ ActiveRecord::Schema.define do
   end
 
   create_table :comments, force: true do |t|
+    t.integer :post_id
     t.string :body
   end
 end
 
 class Post < ActiveRecord::Base
   include ActiveRecordReadOnly
+  has_many :comments, dependent: :destroy
+  accepts_nested_attributes_for :comments
 end
 
 class Comment < ActiveRecord::Base
   include ActiveRecordReadOnly
+  belongs_to :post
 end
 
 class Article < Post
@@ -46,5 +55,8 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
-  config.before(:each) { Post.delete_all }
+  config.before(:each) do
+    Comment.delete_all
+    Post.delete_all
+  end
 end

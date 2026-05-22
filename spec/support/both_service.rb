@@ -11,4 +11,8 @@ class BothService
   def self.update_comment(comment, body)
     comment.update!(body: body)
   end
+
+  def self.create_post_with_comments(title, comment_bodies)
+    Post.create!(title: title, comments_attributes: comment_bodies.map { |b| {body: b} })
+  end
 end
