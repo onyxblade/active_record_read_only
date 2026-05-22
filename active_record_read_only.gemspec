@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/active_record_writable/version"
+require_relative "lib/active_record_read_only/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "active_record_writable"
-  spec.version = ActiveRecordWritable::VERSION
+  spec.name = "active_record_read_only"
+  spec.version = ActiveRecordReadOnly::VERSION
   spec.authors = ["merely"]
   spec.email = ["git@merely.ca"]
 

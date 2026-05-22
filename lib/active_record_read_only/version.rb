@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-module ActiveRecordWritable
+module ActiveRecordReadOnly
   VERSION = "0.1.0"
 end
