@@ -33,6 +33,9 @@ class PostService
 end
 ```
 
+For a walk-through with **real captured call stacks** from each scenario,
+see [`doc/internals.md`](doc/internals.md).
+
 ## How it works
 
 `include ActiveRecordReadOnly` does two things to the model:
