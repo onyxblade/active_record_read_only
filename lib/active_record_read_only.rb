@@ -44,16 +44,14 @@ module ActiveRecordReadOnly
     end
   end
 
-  module Setup
-    def self.included(klass)
-      klass.prepend(ActiveRecordReadOnly::Behavior)
-      marker = Module.new
-      marker.define_singleton_method(:__active_record_read_only_class__) { klass }
-      marker.define_singleton_method(:included) do |_base|
-        loc = caller_locations(1, 8).find { |l| l.path && l.path != __FILE__ }
-        ActiveRecordReadOnly::Registry.allow(klass, loc.path) if loc
-      end
-      klass.const_set(:Writable, marker)
+  def self.included(klass)
+    klass.prepend(ActiveRecordReadOnly::Behavior)
+    marker = Module.new
+    marker.define_singleton_method(:__active_record_read_only_class__) { klass }
+    marker.define_singleton_method(:included) do |_base|
+      loc = caller_locations(1, 8).find { |l| l.path && l.path != __FILE__ }
+      ActiveRecordReadOnly::Registry.allow(klass, loc.path) if loc
     end
+    klass.const_set(:Writable, marker)
   end
 end

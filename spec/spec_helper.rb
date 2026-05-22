@@ -7,6 +7,7 @@ ActiveRecord::Base.establish_connection(adapter: "sqlite3", database: ":memory:"
 
 ActiveRecord::Schema.define do
   create_table :posts, force: true do |t|
+    t.string :type
     t.string :title
     t.string :body
   end
@@ -17,17 +18,25 @@ ActiveRecord::Schema.define do
 end
 
 class Post < ActiveRecord::Base
-  include ActiveRecordReadOnly::Setup
+  include ActiveRecordReadOnly
 end
 
 class Comment < ActiveRecord::Base
-  include ActiveRecordReadOnly::Setup
+  include ActiveRecordReadOnly
+end
+
+class Article < Post
+end
+
+class PrivateNote < Post
+  include ActiveRecordReadOnly
 end
 
 require_relative "support/unregistered_helper"
 require_relative "support/post_service"
 require_relative "support/comment_service"
 require_relative "support/both_service"
+require_relative "support/private_note_service"
 
 RSpec.configure do |config|
   config.example_status_persistence_file_path = ".rspec_status"

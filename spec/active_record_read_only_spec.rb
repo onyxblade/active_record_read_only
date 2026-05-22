@@ -64,4 +64,50 @@ RSpec.describe ActiveRecordReadOnly do
       expect(comment.reload.body).to eq("c2")
     end
   end
+
+  describe "STI" do
+    describe "child without its own Setup (Article < Post)" do
+      it "is readonly by default" do
+        article = PostService.create_article("seed")
+        expect { article.update!(title: "x") }.to raise_error(ActiveRecord::ReadOnlyRecord)
+      end
+
+      it "can be written from a service that includes Post::Writable" do
+        article = PostService.create_article("seed")
+        expect { PostService.update_article(article, "new") }.not_to raise_error
+        expect(article.reload.title).to eq("new")
+      end
+    end
+
+    describe "child with its own Setup (PrivateNote < Post)" do
+      it "is readonly by default" do
+        note = PostService.create_private_note("seed")
+        expect { note.update!(title: "x") }.to raise_error(ActiveRecord::ReadOnlyRecord)
+      end
+
+      it "can be written from a service that includes Post::Writable (parent), via superclass walk" do
+        note = PostService.create_private_note("seed")
+        expect { PostService.update_private_note(note, "new") }.not_to raise_error
+        expect(note.reload.title).to eq("new")
+      end
+
+      it "can be written from a service that includes PrivateNote::Writable" do
+        note = PrivateNoteService.create("seed")
+        expect { PrivateNoteService.update_title(note, "new") }.not_to raise_error
+        expect(note.reload.title).to eq("new")
+      end
+
+      it "PrivateNote::Writable does not retroactively unlock Post (parent)" do
+        post = PostService.create(title: "seed")
+        expect { PrivateNoteService.try_update_post(post, "x") }
+          .to raise_error(ActiveRecord::ReadOnlyRecord)
+      end
+
+      it "PrivateNote::Writable does not unlock Article (sibling)" do
+        article = PostService.create_article("seed")
+        expect { PrivateNoteService.try_update_article(article, "x") }
+          .to raise_error(ActiveRecord::ReadOnlyRecord)
+      end
+    end
+  end
 end

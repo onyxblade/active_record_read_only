@@ -22,4 +22,20 @@ class PostService
   def self.try_update_comment(comment, body)
     comment.update!(body: body)
   end
+
+  def self.create_article(title)
+    Article.create!(title: title)
+  end
+
+  def self.update_article(article, title)
+    article.update!(title: title)
+  end
+
+  def self.create_private_note(title)
+    PrivateNote.create!(title: title)
+  end
+
+  def self.update_private_note(note, title)
+    note.update!(title: title)
+  end
 end
