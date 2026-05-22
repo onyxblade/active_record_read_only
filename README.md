@@ -1,5 +1,14 @@
 # ActiveRecordReadOnly
 
+> ⚠️ **Experimental — not for production use.** This gem enforces its
+> contract by inspecting `caller_locations` at every `readonly?` check, and
+> grants permission based on the file path of frames on the stack. It is a
+> deliberate hack, written to explore an API idea. It has real footguns
+> (background jobs, dynamic dispatch, monkey-patching surface, performance
+> on hot paths) and no compile-time guarantee — anything that can put a
+> frame on the stack from a registered file can write. Use it to play with
+> the pattern, not to protect data you care about.
+
 Make an ActiveRecord model read-only by default, and only allow writes from
 specific service classes. No block wrappers, no `with_writable do ... end` —
 just `include Model::Writable` at the top of the file that should be allowed
